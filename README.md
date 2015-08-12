@@ -1,5 +1,6 @@
 # magnet-control #
-Control package for OpenDrop Digital Microfluidics Platform
+
+Control package for magnet stage with two states: engaged and disengaged.
 
 ## Overview ##
 
@@ -77,26 +78,13 @@ Use Arduino API methods interactively.
     >>> # Turn led off
     >>> proxy.digital_write(13, 0)
 
-Query number of available channels.
+Engage magnet.
 
-    >>> proxy.channel_count()
-    40
+    >>> proxy.magnet_engage()
 
-Query state of channels array.
+Disengage magnet.
+    >>> proxy.magnet_disengage()
 
-    >>> proxy.state_of_channels
-    array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=uint8)
-
-Turn on every other channel.
-
-    >>> proxy.state_of_channels = 20 * [0, 1]
-
-Query updated state of channels array.
-
-    >>> proxy.state_of_channels
-    array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-           1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], dtype=uint8)
 
 ### Configuration and state ###
 
@@ -112,48 +100,6 @@ Print (non-default) configuration values.
     baud_rate: 115200
     i2c_address: 17
 
-    >>> proxy.config.
-    proxy.config.max_waveform_frequency  proxy.config.max_waveform_voltage
-    >>> proxy.config.max_waveform_voltage
-    200
-    >>> proxy.config.max_waveform_frequency
-    10000
-
-Set voltage and frequency.
-
-    >>> result_code = proxy.update_state(voltage=100, frequency=1e3)
-    >>> print proxy.state
-    voltage: 100.0
-    frequency: 1000.0
-
-#### Validation ####
-
-Note that negative values are not allowed for voltage or frequency.
-
-    >>> result_code = proxy.update_state(voltage=-1)  # Negative voltage 
-    >>> print proxy.state
-    voltage: 100.0
-    frequency: 1000.0
-
-Voltage/frequency updates are restricted to allowable range.
-
-    >>> result_code = proxy.update_state(voltage=300)  # Voltage greater than max
-    >>> print proxy.state  # Voltage remains unchanged
-    voltage: 100.0
-    frequency: 1000.0
-
-Max values can be increased by updating the configuration.
-
-    >>> result_code = proxy.update_config(max_waveform_voltage=300)
-    >>> result_code = proxy.update_state(voltage=300)  # Voltage now <= max
-    >>> print proxy.state  # Voltage changed
-    voltage: 300.0
-    frequency: 1000.0
-
-To persist changes to configuration across device reset - *not* state - use
-`save_config` method.
-
-    >>> proxy.save_config()
 
 ### Other methods ###
 
@@ -168,27 +114,26 @@ etc.) are exposed through the RPC API.
     proxy.base_node_software_version       proxy.on_config_baud_rate_changed
     proxy.begin                            proxy.on_config_i2c_address_changed
     proxy.buffer_size                      proxy.on_config_serial_number_changed
-    proxy.channel_count                    proxy.on_state_frequency_changed
-    proxy.config                           proxy.on_state_voltage_changed
-    proxy.delay_ms                         proxy.pin_mode
-    proxy.delay_us                         proxy.properties
-    proxy.digital_read                     proxy.ram_free
-    proxy.digital_write                    proxy.read_eeprom_block
-    proxy.echo_array                       proxy.reset_config
-    proxy.get_buffer                       proxy.reset_state
-    proxy.i2c_address                      proxy.save_config
-    proxy.i2c_available                    proxy.serialize_config
-    proxy.i2c_buffer_size                  proxy.serialize_state
-    proxy.i2c_read                         proxy.set_i2c_address
-    proxy.i2c_read_byte                    proxy.set_state_of_channels
-    proxy.i2c_request                      proxy.software_version
-    proxy.i2c_request_from                 proxy.state
-    proxy.i2c_scan                         proxy.state_of_channels
-    proxy.i2c_write                        proxy.str_echo
-    proxy.load_config                      proxy.update_config
-    proxy.manufacturer                     proxy.update_eeprom_block
-    proxy.max_i2c_payload_size             proxy.update_state
-    proxy.max_serial_payload_size          proxy.url
+    proxy.config                           proxy.pin_mode
+    proxy.delay_ms                         proxy.properties
+    proxy.delay_us                         proxy.ram_free
+    proxy.digital_read                     proxy.read_eeprom_block
+    proxy.digital_write                    proxy.reset_config
+    proxy.echo_array                       proxy.reset_state
+    proxy.get_buffer                       proxy.save_config
+    proxy.i2c_address                      proxy.serialize_config
+    proxy.i2c_available                    proxy.serialize_state
+    proxy.i2c_buffer_size                  proxy.set_i2c_address
+    proxy.i2c_read                         proxy.software_version
+    proxy.i2c_read_byte                    proxy.str_echo
+    proxy.i2c_request                      proxy.update_config
+    proxy.i2c_request_from                 proxy.update_eeprom_block
+    proxy.i2c_scan                         proxy.url
+    proxy.i2c_write
+    proxy.load_config
+    proxy.manufacturer
+    proxy.max_i2c_payload_size
+    proxy.max_serial_payload_size
 
 --------------------------------------------------
 
