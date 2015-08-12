@@ -17,7 +17,7 @@
 #include <pb_validate.h>
 #include <pb_eeprom.h>
 #include "magnet_control_config_validate.h"
-#include "ServoControl/config_pb.h"
+#include "MagnetControl/config_pb.h"
 
 
 namespace magnet_control {
@@ -49,8 +49,12 @@ public:
   uint32_t tick_count_;
   int32_t target_position_;
   Servo servo_;
+  static const uint8_t SERVO_PIN = 9;
+  static const uint8_t SWITCH_PIN = 10;
+  bool magnet_engaged_;
 
-  Node() : BaseNode(), BaseNodeConfig<config_t>(magnet_control_Config_fields) {}
+  Node() : BaseNode(), BaseNodeConfig<config_t>(magnet_control_Config_fields),
+           magnet_engaged_(false) {}
 
   UInt8Array get_buffer() { return UInt8Array(sizeof(buffer_), buffer_); }
   /* This is a required method to provide a temporary buffer to the
@@ -65,6 +69,17 @@ public:
   bool servo_attached() { return servo_.attached(); }
   void servo_detach() { servo_.detach(); }
   void servo_attach(uint8_t servo_pin) { servo_.attach(servo_pin); }
+  void magnet_engage() { servo_.write(config_._.engaged_angle); }
+  void magnet_disengage() { servo_.write(config_._.disengaged_angle); }
+  void loop() {
+    if (magnet_engaged_ && !digitalRead(SWITCH_PIN)) {
+      magnet_disengage();
+      magnet_engaged_ = false;
+    } else if (!magnet_engaged_ && digitalRead(SWITCH_PIN)) {
+      magnet_engage();
+      magnet_engaged_ = true;
+    }
+  }
 };
 
 

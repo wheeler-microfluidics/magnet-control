@@ -15,4 +15,6 @@ message Config {
    *      optional float my_float_field = 50;
    *      optional int32 my_int_field = 51;
    */
+  optional uint32 engaged_angle = 4 [default = 75];
+  optional uint32 disengaged_angle = 5 [default = 103];
 }

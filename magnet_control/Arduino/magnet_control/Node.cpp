@@ -7,6 +7,8 @@ void Node::begin() {
   config_.validator_.set_node(*this);
   config_.reset();
   config_.load();
+  pinMode(SWITCH_PIN, INPUT);
+  servo_.attach(SERVO_PIN);
   // Start Serial after loading config to set baud rate.
 #if !defined(DISABLE_SERIAL)
   //Serial.begin(config_._.baud_rate);
