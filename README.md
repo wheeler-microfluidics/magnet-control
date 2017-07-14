@@ -1,3 +1,4 @@
+![https://ci.appveyor.com/api/projects/status/github/wheeler-microfluidics/magnet-control?branch=master&svg=true](https://ci.appveyor.com/api/projects/status/github/wheeler-microfluidics/magnet-control?branch=master&svg=true)
 # magnet-control #
 
 Control package for magnet stage with two states: engaged and disengaged.
